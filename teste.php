@@ -2,19 +2,20 @@
 header("Access-Control-Allow-Methods: POST"); // Permitir apenas métodos POST
 header("Access-Control-Allow-Headers: Content-Type"); // Permitir apenas o cabeçalho Content-Type
 
-include('./Classes/Database.php');
-include('./Classes/CreateUser.php');
-
-$db = new Database();
+include('./ValidarToken.php');
 
 if ($_SERVER["REQUEST_METHOD"] === "POST") {
   $dataJson = file_get_contents("php://input");
-  $registerUser = new CreateUser($db);
-  $reseult = $registerUser->registerUser($dataJson);
-}
+  $dados = json_decode($dataJson);
+  $token = $dados->token;
+  $valida = validaToken($token);
 
-if ($_SERVER["REQUEST_METHOD"] === "GET") {
-  $registerUser = new CreateUser($db);
-  $usuariosJson = $registerUser->getUsers();
-  echo $usuariosJson;
+  if(!$valida){
+    echo 'token Invalido!';
+  } else{
+    $dadosToken = returnData($token);
+    echo 'Token valido!';
+    echo $dadosToken;
+  }
+
 }

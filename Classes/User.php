@@ -1,0 +1,121 @@
+<?php
+
+include('./Database.php');
+
+class Users {
+  private $conn;
+  private $nome;
+  private $email;
+  private $senha;
+
+  public function __construct(Database $connect) {
+    $this->conn = $connect->getConnetion();
+  }
+
+  public function registerUser($dadosJson){
+    $dados = json_decode($dadosJson);
+
+    if ($dados === null) {
+      echo 'Nenhum dado fornecido';
+      return false;
+    }
+
+    $this->nome = $dados->nome;
+    $this->email = $dados->email;
+    $this->senha = $dados->senha;
+
+    if(strlen($this->nome) > 0 && strlen($this->email) && strlen($this->senha)){
+      $stmt = $this->conn->prepare("SELECT id FROM usuarios WHERE email = ?");
+      $stmt->bindParam(1, $this->email);
+      $stmt->execute();
+  
+      if ($stmt->rowCount() > 0) {
+        echo "Email ja cadastrado!";
+        return false; //Email ja cadastrado
+      }
+  
+      $senhaCriptografada = password_hash($this->senha, PASSWORD_DEFAULT);
+      $stmt = $this->conn->prepare("INSERT INTO usuarios (nome, email, senha) VALUES (?, ?,?)");
+      $stmt->bindParam(1, $this->nome);
+      $stmt->bindParam(2, $this->email);
+      $stmt->bindParam(3, $senhaCriptografada);
+  
+      if ($stmt->execute()) {
+        return true;
+      } else {
+        return false;
+      }
+    } else{
+      echo "Preencha todos os campos corretamente";
+    }
+
+  }
+
+  public function getUsers() {
+    try {
+      $stmt = $this->conn->prepare("SELECT * FROM usuarios ORDER BY id DESC");
+      $stmt->execute();
+
+      $resultado = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+      return json_encode($resultado);
+    } catch (PDOException $e) {
+      echo "Erro ao obter os usuários: " . $e->getMessage();
+      return false;
+    }
+  }
+
+  public function authUser($dadosJson){
+    $dados = json_decode($dadosJson);
+  
+    if ($dados === null) {
+      echo 'Nenhum dado fornecido';
+      return false;
+    }
+    
+    $this->email = $dados->email;
+    $this->senha = $dados->senha;
+  
+    if(strlen($this->email) && strlen($this->senha)){
+      $stmt =  $this->conn->prepare("SELECT id, nome, email, senha FROM usuarios WHERE email = ?"); 
+      $stmt->bindParam(1, $this->email); 
+      $stmt->execute();
+      
+      if($stmt && $stmt->rowCount() != 0){
+        $resultado = $stmt->fetch(PDO::FETCH_ASSOC);
+        if(password_verify($this->senha, $resultado['senha'])){
+          $header = [
+            'alg' => 'HS256',
+            'type' => 'JWT'
+          ];
+          $header = json_encode($header);
+          $header = base64_encode($header);
+  
+          $duracao = time() + (7 * 24 * 60* 60);
+          $payload = [
+            // 'iss' => 'localhost',
+            // 'aud' => 'localhost',
+            'exp' => $duracao,
+            'id' => $resultado['id'],
+            'nome' => $resultado['nome'],
+            'email' => $resultado['email'],
+          ];
+          $payload = json_encode($payload);
+          $payload = base64_encode($payload);
+  
+          $chave = "teste";
+  
+          $assinatura = hash_hmac('sha256', "$header.$payload", $chave, true);
+          $assinatura = base64_encode($assinatura);
+          echo "Token: $header.$payload.$assinatura";
+  
+        } else {
+          echo "Usuário ou senha inválidos!";
+        }
+  
+      }
+    } else{
+      echo "Preencha todos os campos";
+    }
+  }
+}
