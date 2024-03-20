@@ -21,9 +21,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
 }
 
 if($_SERVER["REQUEST_METHOD"] === "GET"){
-  echo "Cabeçalho Authorization: " . $_SERVER["HTTP_AUTHORIZATION"] . "\n";
   $token = $_SERVER["HTTP_AUTHORIZATION"];
-  var_dump($token);
 
   if($token){
     $valida = validaToken($token);

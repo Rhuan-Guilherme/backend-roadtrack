@@ -22,7 +22,6 @@ function validaToken($token) {
       return false;
     }
   } else{
-    echo 'nao';
     return false;
   }
 }
