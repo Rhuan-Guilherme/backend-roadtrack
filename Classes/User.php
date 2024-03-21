@@ -1,6 +1,7 @@
 <?php
 
 include('./Database.php');
+include('Token.php');
 
 class Users {
   private $conn;
@@ -84,31 +85,9 @@ class Users {
       if($stmt && $stmt->rowCount() != 0){
         $resultado = $stmt->fetch(PDO::FETCH_ASSOC);
         if(password_verify($this->senha, $resultado['senha'])){
-          $header = [
-            'alg' => 'HS256',
-            'type' => 'JWT'
-          ];
-          $header = json_encode($header);
-          $header = base64_encode($header);
-  
-          $duracao = time() + (7 * 24 * 60* 60);
-          $payload = [
-            // 'iss' => 'localhost',
-            // 'aud' => 'localhost',
-            'exp' => $duracao,
-            'id' => $resultado['id'],
-            'nome' => $resultado['nome'],
-            'email' => $resultado['email'],
-          ];
-          $payload = json_encode($payload);
-          $payload = base64_encode($payload);
-  
-          $chave = "teste";
-  
-          $assinatura = hash_hmac('sha256', "$header.$payload", $chave, true);
-          $assinatura = base64_encode($assinatura);
-          echo "Token: $header.$payload.$assinatura";
-  
+          $token = new Token();
+          $result = $token->generateToken($resultado['id'], $resultado['nome'], $resultado['email']);
+          echo $result;
         } else {
           echo "Usuário ou senha inválidos!";
         }

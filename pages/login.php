@@ -2,8 +2,9 @@
 header("Access-Control-Allow-Methods: POST"); // Permitir apenas métodos POST
 header("Access-Control-Allow-Headers: Content-Type"); // Permitir apenas o cabeçalho Content-Type
 
-include('./Classes/Database.php');
-include('./Classes/User.php');
+require_once('./Classes/Database.php');
+require_once('./Classes/User.php');
+
 
 $db = new Database();
 

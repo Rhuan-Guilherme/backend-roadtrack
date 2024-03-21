@@ -2,13 +2,15 @@
 header("Access-Control-Allow-Methods: POST"); // Permitir apenas métodos POST
 header("Access-Control-Allow-Headers: Content-Type, Authorization");
 
-include('./ValidarToken.php');
+chdir(__DIR__ . '/../Classes');
+include('Token.php');
 
 if ($_SERVER["REQUEST_METHOD"] === "POST") {
   $dataJson = file_get_contents("php://input");
   $dados = json_decode($dataJson);
-  $token = $dados->token;
-  $valida = validaToken($token);
+  $tokenJson = $dados->token;
+  $token = new Token();
+  $valida = $token->validaToken($tokenJson);
 
   if(!$valida){
     echo 'token Invalido!';
@@ -21,15 +23,16 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
 }
 
 if($_SERVER["REQUEST_METHOD"] === "GET"){
-  $token = $_SERVER["HTTP_AUTHORIZATION"];
+  $tokenJson = $_SERVER["HTTP_AUTHORIZATION"];
 
-  if($token){
-    $valida = validaToken($token);
+  if($tokenJson){
+    $token = new Token();
+    $valida = $token->validaToken($tokenJson);
 
     if(!$valida){
       echo 'Token Inválido!';
   } else {
-      $dadosToken = returnData($token);
+      $dadosToken = $token->returnData($tokenJson);
       echo 'Token Válido!';
       echo $dadosToken;
   }
