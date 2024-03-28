@@ -1,4 +1,5 @@
 <?php
+header("Access-Control-Allow-Origin: *");
 header("Access-Control-Allow-Methods: POST"); // Permitir apenas métodos POST
 header("Access-Control-Allow-Headers: Content-Type"); // Permitir apenas o cabeçalho Content-Type
 

@@ -1,6 +1,5 @@
 <?php
 
-include('./Database.php');
 include('Token.php');
 
 class Users {
@@ -87,14 +86,15 @@ class Users {
         if(password_verify($this->senha, $resultado['senha'])){
           $token = new Token();
           $result = $token->generateToken($resultado['id'], $resultado['nome'], $resultado['email']);
-          echo $result;
+          echo json_encode(['token' => $result]);
         } else {
-          echo "Usuário ou senha inválidos!";
+          echo json_encode(['error' => 'Usuario ou senha invalidos!']);
         }
-  
+      } else{
+        echo json_encode(['error' => 'Usuario ou senha invalidos!']);
       }
     } else{
-      echo "Preencha todos os campos";
+      echo json_encode(['error' => 'Preencha todos os campos']);
     }
   }
 }
