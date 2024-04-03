@@ -30,7 +30,8 @@ class Users {
       $stmt->execute();
   
       if ($stmt->rowCount() > 0) {
-        echo "Email ja cadastrado!";
+        http_response_code(400);
+        echo json_encode(['message' => 'email ja cadastrado']);
         return false; //Email ja cadastrado
       }
   
@@ -41,12 +42,15 @@ class Users {
       $stmt->bindParam(3, $senhaCriptografada);
   
       if ($stmt->execute()) {
+        http_response_code(200);
+        echo json_encode(['message' => 'usuario cadastrado com sucesso']);
         return true;
       } else {
         return false;
       }
     } else{
-      echo "Preencha todos os campos corretamente";
+      http_response_code(400);
+      echo json_encode(['message' => 'preencha todos os campos corretamente']);
     }
 
   }
@@ -77,7 +81,7 @@ class Users {
     $this->senha = $dados->senha;
   
     if(strlen($this->email) && strlen($this->senha)){
-      $stmt =  $this->conn->prepare("SELECT id, nome, email, senha FROM usuarios WHERE email = ?"); 
+      $stmt =  $this->conn->prepare("SELECT id, nome, email, senha, autorizado FROM usuarios WHERE email = ?"); 
       $stmt->bindParam(1, $this->email); 
       $stmt->execute();
       
@@ -85,15 +89,18 @@ class Users {
         $resultado = $stmt->fetch(PDO::FETCH_ASSOC);
         if(password_verify($this->senha, $resultado['senha'])){
           $token = new Token();
-          $result = $token->generateToken($resultado['id'], $resultado['nome'], $resultado['email']);
+          $result = $token->generateToken($resultado['id'], $resultado['nome'], $resultado['email'], $resultado['autorizado']);
           echo json_encode(['token' => $result]);
         } else {
+          http_response_code(400);
           echo json_encode(['error' => 'Usuario ou senha invalidos!']);
         }
       } else{
+        http_response_code(400);
         echo json_encode(['error' => 'Usuario ou senha invalidos!']);
       }
     } else{
+      http_response_code(400);
       echo json_encode(['error' => 'Preencha todos os campos']);
     }
   }

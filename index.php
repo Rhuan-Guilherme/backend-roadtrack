@@ -6,8 +6,8 @@ switch ($url) {
     case 'cadastro':
         require 'pages/cadastro.php';
         break;
-    case 'teste':
-        require 'pages/teste.php';
+    case 'validate':
+        require 'pages/validate.php';
         break;
     case 'login':
         require 'pages/login.php';

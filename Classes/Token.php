@@ -5,7 +5,7 @@ class Token{
   private $chave = 'teste';
 
 
-  public function generateToken($id ,$nome, $email){
+  public function generateToken($id ,$nome, $email, $autorizado){
     $header = [
       'alg' => 'HS256',
       'type' => 'JWT'
@@ -21,6 +21,7 @@ class Token{
       'id' => $id,
       'nome' => $nome,
       'email' => $email,
+      'autorizado' => $autorizado,
     ];
     $payload = json_encode($payload);
     $payload = base64_encode($payload);

@@ -14,7 +14,8 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
 }
 
 if ($_SERVER["REQUEST_METHOD"] === "GET") {
+  $tokenJson = $_SERVER["HTTP_AUTHORIZATION"];
   $registerUser = new Users($db);
-  $usuariosJson = $registerUser->getUsers();
+  $usuariosJson = $registerUser->getUsers($tokenJson);
   echo $usuariosJson;
 }

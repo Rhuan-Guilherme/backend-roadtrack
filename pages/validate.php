@@ -1,4 +1,5 @@
 <?php
+header("Access-Control-Allow-Origin: *");
 header("Access-Control-Allow-Methods: POST"); // Permitir apenas métodos POST
 header("Access-Control-Allow-Headers: Content-Type, Authorization");
 
@@ -13,10 +14,10 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
   $valida = $token->validaToken($tokenJson);
 
   if(!$valida){
+    http_response_code(400);
     echo 'token Invalido!';
   } else{
-    $dadosToken = returnData($token);
-    echo 'Token valido!';
+    $dadosToken = $token->returnData($tokenJson);
     echo $dadosToken;
   }
 
@@ -30,13 +31,14 @@ if($_SERVER["REQUEST_METHOD"] === "GET"){
     $valida = $token->validaToken($tokenJson);
 
     if(!$valida){
+      http_response_code(400);
       echo 'Token Inválido!';
   } else {
       $dadosToken = $token->returnData($tokenJson);
-      echo 'Token Válido!';
       echo $dadosToken;
   }
   } else {
+    http_response_code(400);
     echo 'Token não fornecido!';
   }
 }

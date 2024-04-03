@@ -6,7 +6,6 @@ header("Access-Control-Allow-Headers: Content-Type"); // Permitir apenas o cabe√
 require_once('./Classes/Database.php');
 require_once('./Classes/User.php');
 
-
 $db = new Database();
 
 if ($_SERVER["REQUEST_METHOD"] === "POST") {
