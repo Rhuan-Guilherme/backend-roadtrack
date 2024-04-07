@@ -23,7 +23,7 @@ class StfUsers {
 
   public function returnAutoComplete($termo){
     try {
-      $stmt =  $this->conn->prepare("SELECT name, cargo, area, vip FROM stf_users WHERE login LIKE ?");
+      $stmt =  $this->conn->prepare("SELECT login, name, cargo, area, vip FROM stf_users WHERE login LIKE ?");
       $term = $termo . "%";; // Adiciona o caractere de porcentagem para buscar todas as ocorrências do termo
         $stmt->bindParam(1, $term, PDO::PARAM_STR);
         $stmt->execute();
@@ -34,6 +34,7 @@ class StfUsers {
         
         foreach ($result as $row) {
           $userData = array(
+            'login' => $row['login'],
             'name' => $row['name'],
             'cargo' => $row['cargo'],
             'area' => $row['area'],
@@ -68,10 +69,10 @@ class StfUsers {
     }
   }
 
-  public function atualizaVip($userId){
+  public function atualizaVip($login){
     try{
-      $stmt = $this->conn->prepare("UPDATE stf_users SET vip = 'sim' WHERE id = :userId");
-      $stmt->bindParam(':userId', $userId['id'], PDO::PARAM_INT);
+      $stmt = $this->conn->prepare("UPDATE stf_users SET vip = 'sim' WHERE login = :login");
+      $stmt->bindParam(':login', $login, PDO::PARAM_STR);
       if ($stmt->execute()) {
         http_response_code(200);
         echo json_encode(['message' => 'alterado como vip']);

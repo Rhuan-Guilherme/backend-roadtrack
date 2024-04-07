@@ -18,6 +18,9 @@ switch ($url) {
     case 'vips':
         require 'pages/vips.php';
         break;
+    case 'tickets':
+        require 'pages/tickets.php';
+        break;
     default:
         // Página de erro 404
         http_response_code(404);
