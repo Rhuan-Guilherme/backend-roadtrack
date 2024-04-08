@@ -21,6 +21,12 @@ switch ($url) {
     case 'tickets':
         require 'pages/tickets.php';
         break;
+    case 'dados':
+        require 'pages/dados.php';
+        break;
+    case 'senhas':
+        require 'pages/senhas.php';
+        break;
     default:
         // Página de erro 404
         http_response_code(404);

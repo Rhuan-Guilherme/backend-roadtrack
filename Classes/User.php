@@ -61,9 +61,10 @@ class Users {
       $stmt->execute();
 
       $resultado = $stmt->fetchAll(PDO::FETCH_ASSOC);
-
+      http_response_code(200);
       return json_encode($resultado);
     } catch (PDOException $e) {
+      http_response_code(400);
       echo "Erro ao obter os usuários: " . $e->getMessage();
       return false;
     }
@@ -104,4 +105,62 @@ class Users {
       echo json_encode(['error' => 'Preencha todos os campos']);
     }
   }
+
+  public function alterDataUser($dataJson){
+    $data = json_decode($dataJson);
+    try {
+      $stmt = $this->conn->prepare("UPDATE usuarios SET nome = ?, email = ? WHERE id = ?");
+      $stmt->bindParam(1, $data->nome, PDO::PARAM_STR); 
+      $stmt->bindParam(2, $data->email, PDO::PARAM_STR);
+      $stmt->bindParam(3, $data->id, PDO::PARAM_INT);
+      $stmt->execute();
+
+
+      http_response_code(200);
+      return json_encode(['message' => 'Aletrado com sucesso']);
+    } catch (PDOException $e) {
+      http_response_code(400);
+      echo "Erro ao obter os usuários: " . $e->getMessage();
+      return false;
+    }
+  }
+
+  public function alterPassword($dataJson){
+    $data = json_decode($dataJson);
+
+    try {
+        // Verifique se todos os campos necessários foram fornecidos
+        if (!isset($data->id) || !isset($data->senha_antiga) || !isset($data->nova_senha)) {
+            throw new Exception("Campos obrigatórios não fornecidos");
+        }
+
+        // Primeiro, verifique se a senha antiga está correta
+        $stmt = $this->conn->prepare("SELECT senha FROM usuarios WHERE id = ?");
+        $stmt->bindParam(1, $data->id, PDO::PARAM_INT);
+        $stmt->execute();
+        $user = $stmt->fetch(PDO::FETCH_ASSOC);
+
+        if (!$user) {
+            throw new Exception("Usuário não encontrado");
+        }
+
+        $senha_hash = $user['senha'];
+        if (!password_verify($data->senha_antiga, $senha_hash)) {
+            throw new Exception("Senha antiga incorreta");
+        }
+
+        // Se a senha antiga estiver correta, atualize para a nova senha
+        $nova_senha_hash = password_hash($data->nova_senha, PASSWORD_DEFAULT);
+        $stmt = $this->conn->prepare("UPDATE usuarios SET senha = ? WHERE id = ?");
+        $stmt->bindParam(1, $nova_senha_hash, PDO::PARAM_STR);
+        $stmt->bindParam(2, $data->id, PDO::PARAM_INT);
+        $stmt->execute();
+
+        http_response_code(200);
+        return json_encode(['message' => 'Senha alterada com sucesso']);
+    } catch (Exception $e) {
+        http_response_code(400);
+        return json_encode(['error' => $e->getMessage()]);
+    }
+}
 }
