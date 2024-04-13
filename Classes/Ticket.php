@@ -21,4 +21,53 @@ class Ticket {
       return false;
     }
   }
+  
+
+  public function createTicketN1($json) {
+    $body = json_decode($json);
+    try {
+        // Definindo valores padrão para as propriedades do corpo
+        $userId = isset($body->user_id) ? $body->user_id : '';
+        $criador = isset($body->criador) ? $body->criador : '';
+        $nome = isset($body->nome) ? $body->nome : '';
+        $login = isset($body->login) ? $body->login : '';
+        $ramal = isset($body->ramal) ? $body->ramal : '';
+        $area = isset($body->area) ? $body->area : '';
+        $patrimonio = isset($body->patrimonio) ? $body->patrimonio : '';
+        $informacao = isset($body->informacao) ? $body->informacao : '';
+        $local = isset($body->local) ? $body->local : '';
+        $chamado = isset($body->chamado) ? $body->chamado : '';
+        $destinatario = isset($body->destinatario) ? $body->destinatario : '';
+        $created_at = isset($body->created_at) ? $body->created_at : ''; 
+        $tipo = isset($body->tipo) ? $body->tipo : '';
+        $vip = isset($body->vip) ? $body->vip : '';
+
+        $stmt = $this->conn->prepare("INSERT INTO tickets (user_id, criador, nome, login, ramal, area, patrimonio, informacao, local, chamado, destinatario, status, created_at, tipo, vip) VALUES (:userId, :criador, :nome, :login, :ramal, :area, :patrimonio, :informacao, :local, :chamado, :destinatario, 'Aberto', :created_at, :tipo, :vip)");
+
+        $stmt->bindParam(':userId', $userId, PDO::PARAM_INT);
+        $stmt->bindParam(':criador', $criador, PDO::PARAM_STR);
+        $stmt->bindParam(':nome', $nome, PDO::PARAM_STR);
+        $stmt->bindParam(':login', $login, PDO::PARAM_STR);
+        $stmt->bindParam(':ramal', $ramal, PDO::PARAM_STR);
+        $stmt->bindParam(':area', $area, PDO::PARAM_STR);
+        $stmt->bindParam(':patrimonio', $patrimonio, PDO::PARAM_STR);
+        $stmt->bindParam(':informacao', $informacao, PDO::PARAM_STR);
+        $stmt->bindParam(':local', $local, PDO::PARAM_STR);
+        $stmt->bindParam(':chamado', $chamado, PDO::PARAM_STR);
+        $stmt->bindParam(':destinatario', $destinatario, PDO::PARAM_STR);
+        $stmt->bindParam(':created_at', $created_at, PDO::PARAM_STR);
+        $stmt->bindParam(':tipo', $tipo, PDO::PARAM_STR);
+        $stmt->bindParam(':vip', $vip, PDO::PARAM_STR);
+
+        $stmt->execute();
+
+        return json_encode(["success" => true]);
+    } catch (PDOException $e) {
+        echo "Erro ao criar ticket: " . $e->getMessage();
+        return json_encode(["success" => false]);
+    }
 }
+  
+}
+
+  

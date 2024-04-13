@@ -9,7 +9,14 @@ $db = new Database();
 
 if ($_SERVER["REQUEST_METHOD"] === "GET") {
   $id = $_GET["id"];
-  $user = new Ticket($db);
-  $json = $user->ticketsById($id);
+  $tikect = new Ticket($db);
+  $json = $tikect->ticketsById($id);
+  echo $json;
+}
+
+if ($_SERVER["REQUEST_METHOD"] === "POST") {
+  $dataJson = file_get_contents("php://input");
+  $tikect = new Ticket($db);
+  $json = $tikect->createTicketN1($dataJson);
   echo $json;
 }
