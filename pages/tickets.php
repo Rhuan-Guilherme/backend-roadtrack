@@ -1,6 +1,7 @@
 <?php
 header("Access-Control-Allow-Origin: *");
 header("Access-Control-Allow-Headers: Content-Type");
+header("Access-Control-Allow-Methods: GET, POST, PUT, DELETE");
 
 include('./Classes/Database.php');
 include('./Classes/Ticket.php');
@@ -11,6 +12,13 @@ if ($_SERVER["REQUEST_METHOD"] === "GET") {
   $id = $_GET["id"];
   $tikect = new Ticket($db);
   $json = $tikect->ticketsById($id);
+  echo $json;
+}
+
+if ($_SERVER["REQUEST_METHOD"] === "DELETE") {
+  $id = $_GET["id"];
+  $tikect = new Ticket($db);
+  $json = $tikect->deleteTicketsById($id);
   echo $json;
 }
 

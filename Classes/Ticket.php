@@ -22,11 +22,20 @@ class Ticket {
     }
   }
   
+  public function deleteTicketsById($id){
+    try{
+      $stmt = $this->conn->prepare("DELETE FROM tickets WHERE id = ?");
+      $stmt->bindParam(1, $id, PDO::PARAM_INT);
+      $stmt->execute();
+      return json_encode(["success" => true]);
+    } catch(PDOException $e) {
+      return json_encode(["success" => false]);
+    }
+  }
 
   public function createTicketN1($json) {
     $body = json_decode($json);
     try {
-        // Definindo valores padrão para as propriedades do corpo
         $userId = isset($body->user_id) ? $body->user_id : '';
         $criador = isset($body->criador) ? $body->criador : '';
         $nome = isset($body->nome) ? $body->nome : '';
