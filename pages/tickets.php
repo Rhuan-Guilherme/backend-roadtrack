@@ -28,3 +28,10 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
   $json = $tikect->createTicketN1($dataJson);
   echo $json;
 }
+
+if ($_SERVER["REQUEST_METHOD"] === "PUT") {
+  $dataJson = file_get_contents("php://input");
+  $tikect = new Ticket($db);
+  $json = $tikect->updateTicketN1($dataJson);
+  echo $json;
+}

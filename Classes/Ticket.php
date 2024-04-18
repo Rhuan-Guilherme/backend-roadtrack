@@ -76,6 +76,42 @@ class Ticket {
         return json_encode(["success" => false]);
     }
 }
+
+public function updateTicketN1($json) {
+  $body = json_decode($json);
+  try {
+      $ticketId = isset($body->ticket_id) ? $body->ticket_id : '';
+      $nome = isset($body->nome) ? $body->nome : '';
+      $login = isset($body->login) ? $body->login : '';
+      $ramal = isset($body->ramal) ? $body->ramal : '';
+      $area = isset($body->area) ? $body->area : '';
+      $patrimonio = isset($body->patrimonio) ? $body->patrimonio : '';
+      $informacao = isset($body->informacao) ? $body->informacao : '';
+      $local = isset($body->local) ? $body->local : '';
+      $chamado = isset($body->chamado) ? $body->chamado : '';
+      $destinatario = isset($body->destinatario) ? $body->destinatario : '';
+
+      $stmt = $this->conn->prepare("UPDATE tickets SET nome = :nome, login = :login, ramal = :ramal, area = :area, patrimonio = :patrimonio, informacao = :informacao, local = :local, chamado = :chamado, destinatario = :destinatario WHERE id = :ticketId");
+
+      $stmt->bindParam(':ticketId', $ticketId, PDO::PARAM_INT);
+      $stmt->bindParam(':nome', $nome, PDO::PARAM_STR);
+      $stmt->bindParam(':login', $login, PDO::PARAM_STR);
+      $stmt->bindParam(':ramal', $ramal, PDO::PARAM_STR);
+      $stmt->bindParam(':area', $area, PDO::PARAM_STR);
+      $stmt->bindParam(':patrimonio', $patrimonio, PDO::PARAM_STR);
+      $stmt->bindParam(':informacao', $informacao, PDO::PARAM_STR);
+      $stmt->bindParam(':local', $local, PDO::PARAM_STR);
+      $stmt->bindParam(':chamado', $chamado, PDO::PARAM_STR);
+      $stmt->bindParam(':destinatario', $destinatario, PDO::PARAM_STR);
+
+      $stmt->execute();
+
+      return json_encode(["success" => true]);
+  } catch (PDOException $e) {
+      echo "Erro ao atualizar ticket: " . $e->getMessage();
+      return json_encode(["success" => false]);
+  }
+}
   
 }
 
