@@ -21,6 +21,9 @@ switch ($url) {
     case 'tickets':
         require 'pages/tickets.php';
         break;
+    case 'options':
+        require 'pages/optionsTickets.php';
+        break;
     case 'dados':
         require 'pages/dados.php';
         break;

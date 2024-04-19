@@ -77,6 +77,32 @@ class Ticket {
     }
 }
 
+public function concluiTicket($id) {
+  try {
+      $stmt = $this->conn->prepare("UPDATE tickets SET status = 'Fechado' WHERE id = :ticketId");
+      $stmt->bindParam(':ticketId', $id, PDO::PARAM_INT);
+      $stmt->execute();
+
+      return json_encode(["success" => true]);
+  } catch (PDOException $e) {
+      echo "Erro ao atualizar ticket: " . $e->getMessage();
+      return json_encode(["success" => false]);
+  }
+}
+
+public function reabreTicket($id) {
+  try {
+      $stmt = $this->conn->prepare("UPDATE tickets SET status = 'Aberto' WHERE id = :ticketId");
+      $stmt->bindParam(':ticketId', $id, PDO::PARAM_INT);
+      $stmt->execute();
+
+      return json_encode(["success" => true]);
+  } catch (PDOException $e) {
+      echo "Erro ao atualizar ticket: " . $e->getMessage();
+      return json_encode(["success" => false]);
+  }
+}
+
 public function updateTicketN1($json) {
   $body = json_decode($json);
   try {
