@@ -12,5 +12,5 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
   $dataJson = file_get_contents("php://input");
   $registerUser = new Users($db);
   $reseult = $registerUser->authUser($dataJson);
-  echo $reseult;
+  return $reseult;
 }
