@@ -16,7 +16,8 @@ class Users {
     $dados = json_decode($dadosJson);
 
     if ($dados === null) {
-      echo 'Nenhum dado fornecido';
+      http_response_code(400);
+      echo json_encode(['message' => 'Nenhum dado fornecido', 'check' => false]);
       return false;
     }
 
@@ -24,15 +25,15 @@ class Users {
     $this->email = $dados->email;
     $this->senha = $dados->senha;
 
-    if(strlen($this->nome) > 0 && strlen($this->email) && strlen($this->senha)){
+    if(strlen($this->nome) && strlen($this->email) && strlen($this->senha)){
       $stmt = $this->conn->prepare("SELECT id FROM usuarios WHERE email = ?");
       $stmt->bindParam(1, $this->email);
       $stmt->execute();
   
       if ($stmt->rowCount() > 0) {
         http_response_code(400);
-        echo json_encode(['message' => 'email ja cadastrado']);
-        return false; //Email ja cadastrado
+        echo json_encode(['message' => 'E-mail ja cadastrado', 'check' => false]);
+        return false; 
       }
   
       $senhaCriptografada = password_hash($this->senha, PASSWORD_DEFAULT);
@@ -43,14 +44,14 @@ class Users {
   
       if ($stmt->execute()) {
         http_response_code(200);
-        echo json_encode(['message' => 'usuario cadastrado com sucesso']);
+        echo json_encode(['message' => 'Conta criada com sucesso', 'check' => true]);
         return true;
       } else {
         return false;
       }
     } else{
       http_response_code(400);
-      echo json_encode(['message' => 'preencha todos os campos corretamente']);
+      echo json_encode(['message' => 'Preencha todos os campos corretamente', 'check' => false]);
     }
 
   }
@@ -74,7 +75,8 @@ class Users {
     $dados = json_decode($dadosJson);
   
     if ($dados === null) {
-      echo 'Nenhum dado fornecido';
+      http_response_code(400);
+      echo json_encode(['message' => 'Nenhum dado fornecido', 'check' => false]);
       return false;
     }
     
@@ -86,23 +88,29 @@ class Users {
       $stmt->bindParam(1, $this->email); 
       $stmt->execute();
       
-      if($stmt && $stmt->rowCount() != 0){
+      if($stmt->rowCount() > 0){
         $resultado = $stmt->fetch(PDO::FETCH_ASSOC);
         if(password_verify($this->senha, $resultado['senha'])){
-          $token = new Token();
-          $result = $token->generateToken($resultado['id'], $resultado['nome'], $resultado['email'], $resultado['autorizado']);
-          echo json_encode(['token' => $result]);
+          if($resultado['autorizado'] === 'nao'){
+            echo json_encode(['message' => 'Usuário bloqueado', 'check' => false]);
+            return false;
+          } else{
+            $token = new Token();
+            $result = $token->generateToken($resultado['id'], $resultado['nome'], $resultado['email'], $resultado['autorizado']);
+            echo json_encode(['message' => 'Login feito com sucesso', 'check' => true, 'token' => $result]);
+            return true;
+          }
         } else {
           http_response_code(400);
-          echo json_encode(['error' => 'Usuario ou senha invalidos!']);
+          echo json_encode(['message' => 'Usuario ou senha invalidos!', 'check' => false]);
         }
       } else{
         http_response_code(400);
-        echo json_encode(['error' => 'Usuario ou senha invalidos!']);
+        echo json_encode(['message' => 'Usuario ou senha invalidos!','check' => false]);
       }
     } else{
       http_response_code(400);
-      echo json_encode(['error' => 'Preencha todos os campos']);
+      echo json_encode(['message' => 'Preencha todos os campos', 'check' => false]);
     }
   }
 

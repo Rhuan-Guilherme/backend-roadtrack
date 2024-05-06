@@ -12,33 +12,14 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
   $tokenJson = $dados->token;
   $token = new Token();
   $valida = $token->validaToken($tokenJson);
-
-  if(!$valida){
-    http_response_code(400);
-    echo 'token Invalido!';
-  } else{
-    $dadosToken = $token->returnData($tokenJson);
-    echo $dadosToken;
-  }
-
+  echo $valida;
 }
 
 if($_SERVER["REQUEST_METHOD"] === "GET"){
   $tokenJson = $_SERVER["HTTP_AUTHORIZATION"];
-
   if($tokenJson){
     $token = new Token();
     $valida = $token->validaToken($tokenJson);
-
-    if(!$valida){
-      http_response_code(400);
-      echo 'Token Inválido!';
-  } else {
-      $dadosToken = $token->returnData($tokenJson);
-      echo $dadosToken;
-  }
-  } else {
-    http_response_code(400);
-    echo 'Token não fornecido!';
+    echo $valida;
   }
 }

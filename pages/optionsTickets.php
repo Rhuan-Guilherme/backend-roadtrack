@@ -20,7 +20,4 @@ if ($_SERVER["REQUEST_METHOD"] === "PUT") {
     $json = $tikect->concluiTicket($id);
      echo $json;
   }
-  
-  
-  
 }

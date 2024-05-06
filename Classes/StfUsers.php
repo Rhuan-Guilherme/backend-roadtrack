@@ -11,9 +11,9 @@ class StfUsers {
     try {
       $stmt = $this->conn->prepare("SELECT * FROM stf_users ORDER BY id DESC");
       $stmt->execute();
-
       $resultado = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
+      http_response_code(200);
       return json_encode($resultado);
     } catch (PDOException $e) {
       echo "Erro ao obter os usuários: " . $e->getMessage();
@@ -75,14 +75,13 @@ class StfUsers {
       $stmt->bindParam(':login', $login, PDO::PARAM_STR);
       if ($stmt->execute()) {
         http_response_code(200);
-        echo json_encode(['message' => 'alterado como vip']);
-        return true;
+        return json_encode(['message' => 'Usuário alterado como VIP']);
       } else{
-        echo json_encode(['message' => 'erro ao alterar']);
+        http_response_code(400);
+        return json_encode(['message' => 'Erro ao alterar']);
       }
     } catch (PDOException $e) {
-      echo "Erro ao atualizar o usuário: " . $e->getMessage();
-      return false;
+      return "Erro ao atualizar o usuário: " . $e->getMessage();
     }
   }
 
@@ -92,14 +91,13 @@ class StfUsers {
       $stmt->bindParam(':userId', $userId['id'], PDO::PARAM_INT);
       if ($stmt->execute()) {
         http_response_code(200);
-        echo json_encode(['message' => 'alterado como nao vip']);
-        return true;
+        return json_encode(['message' => 'Usuário retirado da lista de VIPs']);
       } else{
-        echo json_encode(['message' => 'erro ao alterar']);
+        http_response_code(400);
+        return json_encode(['message' => 'Erro ao alterar']);
       }
     } catch (PDOException $e) {
-      echo "Erro ao atualizar o usuário: " . $e->getMessage();
-      return false;
+      return "Erro ao atualizar o usuário: " . $e->getMessage();
     }
   }
 

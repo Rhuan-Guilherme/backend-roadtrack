@@ -2,7 +2,7 @@
 
 class Token{
   private $token;
-  private $chave = 'teste';
+  private $chave = 'wQ!87d5eL£47';
 
 
   public function generateToken($id ,$nome, $email, $autorizado){
@@ -44,23 +44,17 @@ class Token{
     
   
     if($assinatura == $validarAssinatura){
-      $dadosToken = json_decode(base64_decode($payload)); // Decodificar o payload como JSON
-  
-      if($dadosToken->exp > time()){
-        return true;
+      $dadosToken = json_decode(base64_decode($payload));
+      if($dadosToken->exp > time() && $dadosToken->autorizado === 'sim'){
+        http_response_code(200);
+        return json_encode($dadosToken);
       } else{
-        return false;
+        http_response_code(400);
+        return json_encode(['message' => 'Erro ao validar Token', 'check' => false]);
       }
     } else{
-      return false;
+      http_response_code(400);
+      return json_encode(['message' => 'Erro na assinatura do Token', 'check' => false]);
     }
   }
-
-  public function returnData($token){
-    $tokenArray = explode('.', $token);
-    $payload = $tokenArray[1];
-    $dadosToken = json_decode(base64_decode($payload));
-    return json_encode($dadosToken);
-  }
-  
 }
