@@ -47,7 +47,7 @@ class Token{
       $dadosToken = json_decode(base64_decode($payload));
       if($dadosToken->exp > time() && $dadosToken->autorizado === 'sim'){
         http_response_code(200);
-        return json_encode($dadosToken);
+        return json_encode(['message' => 'Token validado', 'check' => true, 'data' => $dadosToken]);
       } else{
         http_response_code(400);
         return json_encode(['message' => 'Erro ao validar Token', 'check' => false]);

@@ -7,11 +7,11 @@ include('./Classes/StfUsers.php');
 
 $db = new Database();
 
-// if ($_SERVER["REQUEST_METHOD"] === "GET") {
-//   $user = new StfUsers($db);
-//   $json = $user->getData();
-//   echo $json;
-// }
+if ($_SERVER["REQUEST_METHOD"] === "GET") {
+  $user = new StfUsers($db);
+  $json = $user->getData();
+  echo $json;
+}
 
 if ($_SERVER["REQUEST_METHOD"] === "POST") {
   $dataJson = file_get_contents("php://input");
@@ -22,6 +22,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
 }
 
 // if ($_SERVER["REQUEST_METHOD"] === "POST") {
+
 //   $dataJson = file_get_contents("php://input");
 //   $data = json_decode($dataJson, true); 
 //   $user = new StfUsers($db);

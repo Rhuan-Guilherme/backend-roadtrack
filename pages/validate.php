@@ -12,7 +12,12 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
   $tokenJson = $dados->token;
   $token = new Token();
   $valida = $token->validaToken($tokenJson);
-  echo $valida;
+  $jsonValidate = json_decode($valida);
+  if($jsonValidate->check === true) {
+    echo json_encode(['message' => 'Token validado', 'check' => true] );
+  } else{
+    echo json_encode(['message' => 'Token validado', 'check' => false] );
+  }
 }
 
 if($_SERVER["REQUEST_METHOD"] === "GET"){
