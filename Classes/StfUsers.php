@@ -53,21 +53,31 @@ class StfUsers {
 
   public function registerUser($data){
     try{
-      $stmt = $this->conn->prepare("INSERT INTO stf_users (login, name, cargo, area) VALUES (?, ?, ?, ?)");
-      $stmt->bindParam(1, $data['login']);
-      $stmt->bindParam(2, $data['name']);
-      $stmt->bindParam(3, $data['cargo']);
-      $stmt->bindParam(4, $data['area']);
-      if ($stmt->execute()) {
-        http_response_code(200);
-        echo json_encode(['message' => 'usuario cadastrado com sucesso']);
-        return true;
-      }
+        $stmt_check = $this->conn->prepare("SELECT COUNT(*) as count FROM stf_users WHERE login = ?");
+        $stmt_check->bindParam(1, $data['login']);
+        $stmt_check->execute();
+        $result = $stmt_check->fetch(PDO::FETCH_ASSOC);
+        
+        if($result['count'] > 0) {
+            http_response_code(400);
+            echo json_encode(['message' => 'Já existe um usuário com esse login']);
+            return false;
+        }
+
+        $stmt = $this->conn->prepare("INSERT INTO stf_users (login, name, cargo, area) VALUES (?, ?, ?, ?)");
+        $stmt->bindParam(1, $data['login']);
+        $stmt->bindParam(2, $data['name']);
+        $stmt->bindParam(3, $data['cargo']);
+        $stmt->bindParam(4, $data['area']);
+        
+        if ($stmt->execute()) {
+            http_response_code(200);
+            echo json_encode(['message' => 'Usuário cadastrado com sucesso']);
+        }
     } catch (PDOException $e) {
-      echo "Erro ao atualizar o usuário: " . $e->getMessage();
-      return false;
+        echo "Erro ao atualizar o usuário: " . $e->getMessage();
     }
-  }
+}
 
   public function atualizaVip($login){
     try{
