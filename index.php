@@ -30,6 +30,9 @@ switch ($url) {
     case 'senhas':
         require 'pages/senhas.php';
         break;
+    case 'binds':
+        require 'pages/binds.php';
+        break;
     default:
         // Página de erro 404
         http_response_code(404);

@@ -21,3 +21,20 @@ if ($_SERVER["REQUEST_METHOD"] === "PUT") {
      echo $json;
   }
 }
+
+if ($_SERVER["REQUEST_METHOD"] === "GET"){
+  $ticket = new Ticket($db);
+  $json = $ticket->countTicketsByUser();
+  $data = json_decode($json, true);
+
+  $formattedData = array();
+
+  foreach ($data as $row) {
+      $formattedData[] = array(
+          'data' => array($row['total_chamados']),
+          'label' => $row['nome_usuario']
+      );
+  }
+
+  echo json_encode($formattedData);
+}

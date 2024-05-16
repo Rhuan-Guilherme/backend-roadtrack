@@ -138,6 +138,23 @@ public function updateTicketN1($json) {
       return json_encode(["success" => false]);
   }
 }
+
+public function countTicketsByUser(){
+  try {
+      $stmt = $this->conn->prepare("SELECT u.nome AS nome_usuario, COUNT(c.id) AS total_chamados 
+      FROM usuarios u 
+      LEFT JOIN tickets c ON u.id = c.user_id 
+      GROUP BY u.id");
+      $stmt->execute();
+
+      $resultado = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+      return json_encode($resultado);
+  } catch (PDOException $e) {
+      echo "Erro ao obter os tickets: " . $e->getMessage();
+      return false;
+  }
+}
   
 }
 
