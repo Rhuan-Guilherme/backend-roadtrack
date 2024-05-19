@@ -8,7 +8,12 @@
 </head>
 <body class="bg-gray-900 h-screen flex flex-col items-center justify-center gap-3">
     <?php
-    require '../ConectBanco/bancoUsuarios.php';
+    $servername = "localhost";
+    $username = "root";
+    $password = "";
+    $dbName = "roadtrack";
+    
+    $conexao = new mysqli($servername, $username, $password, $dbName);
 
     // Verificar conexão
     if ($conexao->connect_error) {
@@ -31,10 +36,10 @@
         // Enviar e-mail com o link de redefinição de senha
         ini_set('display_errors', 1);
         error_reporting(E_ALL);
-        $from = "atendimento@n1track.com";
+        $from = "roadtrack@roadtrack.com.br ";
         $to = $email;
         $subject = "N1track - Redefinição de Senha";
-        $message = "Clique no link a seguir para redefinir sua senha: http://n1track.com/senha/redefinirSenha.php?token=$token";
+        $message = "Clique no link a seguir para redefinir sua senha: https://roadtrack.com.br/API/senha/redefinirSenha.php?token=$token";
         $headers = "From: " . $from;
         mail($to, $subject, $message, $headers);
 

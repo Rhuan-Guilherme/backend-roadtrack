@@ -9,7 +9,12 @@
 <body class="bg-gray-900 h-screen flex flex-col items-center justify-center gap-3">
 <?php
 
-require '../ConectBanco/bancoUsuarios.php';
+$servername = "localhost";
+$username = "root";
+$password = "";
+$dbName = "roadtrack";
+
+$conexao = new mysqli($servername, $username, $password, $dbName);
 
 // Verificar conexão
 if ($conexao->connect_error) {
