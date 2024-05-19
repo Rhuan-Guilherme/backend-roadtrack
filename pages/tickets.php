@@ -10,8 +10,10 @@ $db = new Database();
 
 if ($_SERVER["REQUEST_METHOD"] === "GET") {
   $id = $_GET["id"];
+  $limit = $_GET["limit"];
+  $status = $_GET["status"];
   $tikect = new Ticket($db);
-  $json = $tikect->ticketsById($id);
+  $json = $tikect->ticketsById($id, $limit, $status);
   echo $json;
 }
 

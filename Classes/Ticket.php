@@ -7,10 +7,17 @@ class Ticket {
     $this->conn = $connect->getConnetion();
   }
 
-  public function ticketsById($userId){
+  public function ticketsById($userId, $limit, $status){
     try {
-      $stmt = $this->conn->prepare("SELECT * FROM tickets WHERE user_id = ? ORDER BY id DESC LIMIT 50");
-      $stmt->bindParam(1, $userId, PDO::PARAM_STR);
+      if($status === 'all' || $status == false){
+        $stmt = $this->conn->prepare("SELECT * FROM tickets WHERE user_id = ? ORDER BY id DESC LIMIT $limit");
+        $stmt->bindParam(1, $userId, PDO::PARAM_STR);
+      } else{
+        $stmt = $this->conn->prepare("SELECT * FROM tickets WHERE user_id = ? AND status = ? ORDER BY id DESC LIMIT $limit");    
+        $stmt->bindParam(1, $userId, PDO::PARAM_STR);
+        $stmt->bindParam(2, $status, PDO::PARAM_STR);    
+      }
+      
       $stmt->execute();
 
       $resultado = $stmt->fetchAll(PDO::FETCH_ASSOC);
