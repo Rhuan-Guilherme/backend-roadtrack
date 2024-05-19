@@ -9,9 +9,9 @@
 <body class="bg-gray-900 h-screen flex flex-col items-center justify-center gap-3">
     <?php
     $servername = "localhost";
-    $username = "root";
-    $password = "";
-    $dbName = "roadtrack";
+    $username = "u417659758_RoadTrack";
+    $password = "5^>0KANl^N";
+    $dbName = "u417659758_roadtrack";
     
     $conexao = new mysqli($servername, $username, $password, $dbName);
 

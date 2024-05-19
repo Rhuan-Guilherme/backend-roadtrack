@@ -10,9 +10,9 @@
 <?php
 
 $servername = "localhost";
-$username = "root";
-$password = "";
-$dbName = "roadtrack";
+$username = "u417659758_RoadTrack";
+$password = "5^>0KANl^N";
+$dbName = "u417659758_roadtrack";
 
 $conexao = new mysqli($servername, $username, $password, $dbName);
 
